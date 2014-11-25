@@ -2,21 +2,21 @@
 #include "irInfo.h"
 
 //#define TRUE 1
-#define FULL_TURN 3000
+#define FULL_TURN 450000
 
 //char enable = FALSE;
 // stop function
 void stop(void){
 	// turn off the enables
-	P2OUT &= ~(BIT0 & BIT3);
+	P2OUT &= ~(BIT0 | BIT3);
 }
 
 // moveForward function
 void moveForward(void){
 	// turn on the enables
-	P2OUT |= BIT0 & BIT3;
+	P2OUT |= BIT0 | BIT3;
 
-	// left moter ccw
+	// left motor ccw
 	P2OUT |= BIT1;
 	TA1CCTL1 = OUTMOD_7;
 
@@ -28,7 +28,7 @@ void moveForward(void){
 // moveBackward function
 void moveBackward(void){
 	// turn on the enables
-	P2OUT |= BIT0 & BIT3;
+	P2OUT |= BIT0 | BIT3;
 
 	// left motor cw
 	P2OUT &= ~BIT1;
@@ -42,7 +42,7 @@ void moveBackward(void){
 // turnLeft function
 void turnLeft(char turnType){
 	// turn on the enables
-	P2OUT |= BIT0 & BIT3;
+	P2OUT |= BIT0 | BIT3;
 
 	// left motor cw
 	P2OUT &= ~BIT1;
@@ -54,19 +54,19 @@ void turnLeft(char turnType){
 
 	// long turn as 1, short turn as 0
 	if(turnType){
-		delay(FULL_TURN);
+		__delay_cycles(FULL_TURN);
 	}
 	else{
-		delay(FULL_TURN/2);
+		__delay_cycles(FULL_TURN/2);
 	}
 }
 
 // turnRight function
 void turnRight(char turnType){
 	// turn on the enables
-	P2OUT |= BIT0 & BIT3;
+	P2OUT |= BIT0 | BIT3;
 
-	// left moter ccw
+	// left motor ccw
 	P2OUT |= BIT1;
 	TA1CCTL1 = OUTMOD_7;
 
@@ -76,10 +76,10 @@ void turnRight(char turnType){
 
 	// long turn as 1, short turn as 0
 	if(turnType){
-		delay(FULL_TURN);
+		__delay_cycles(FULL_TURN);
 	}
 	else{
-		delay(FULL_TURN/2);
+		__delay_cycles(FULL_TURN/2);
 	}
 }
 
@@ -130,6 +130,10 @@ void main(void) {
 */
 //    	moveForward();
 //    	moveBackward();
-    	turnLeft(1);
+//    	turnLeft(0);
+    	moveForward();
+    	__delay_cycles(3000000);
+    	stop();
+    	__delay_cycles(3000000);
     } // end loop
 } // end main
