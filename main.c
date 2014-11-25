@@ -2,29 +2,27 @@
 #include "irInfo.h"
 
 //#define TRUE 1
-//#define FALSE 0
+#define FULL_TURN 3000
 
 //char enable = FALSE;
 // stop function
 void stop(void){
 	// turn off the enables
-//	enable = FALSE;
 	P2OUT &= ~(BIT0 & BIT3);
 }
 
 // moveForward function
 void moveForward(void){
-//	enable = TRUE;
 	// turn on the enables
 	P2OUT |= BIT0 & BIT3;
 
+	// left moter ccw
 	P2OUT |= BIT1;
-//    TA1CCR1 = 0x0050;
-	TA1CCTL1 = OUTMOD_3;
+	TA1CCTL1 = OUTMOD_7;
 
+	// right motor cw
 	P2OUT &= ~BIT5;
-//    TA1CCR2 = 0x0050;
-	TA1CCTL2 = OUTMOD_7;
+	TA1CCTL2 = OUTMOD_3;
 }
 
 // moveBackward function
@@ -32,39 +30,57 @@ void moveBackward(void){
 	// turn on the enables
 	P2OUT |= BIT0 & BIT3;
 
+	// left motor cw
 	P2OUT &= ~BIT1;
-//    TA1CCR1 = 0x0050;
 	TA1CCTL1 = OUTMOD_3;
 
+	// right motor ccw
 	P2OUT |= BIT5;
-//    TA1CCR2 = 0x0050;
 	TA1CCTL2 = OUTMOD_7;
 }
 
 // turnLeft function
-void turnLeft(unsigned int turnTime){
-	do{
-		P2DIR &= ~BIT2;
-		TA1CCTL1 = OUTMOD_3;
+void turnLeft(char turnType){
+	// turn on the enables
+	P2OUT |= BIT0 & BIT3;
 
-		P2DIR |= BIT4;
-		TA1CCTL2 = OUTMOD_7;
+	// left motor cw
+	P2OUT &= ~BIT1;
+	TA1CCTL1 = OUTMOD_3;
 
-		turnTime--;
-	}while(turnTime>0);
+	// right motor cw
+	P2OUT &= ~BIT5;
+	TA1CCTL2 = OUTMOD_3;
+
+	// long turn as 1, short turn as 0
+	if(turnType){
+		delay(FULL_TURN);
+	}
+	else{
+		delay(FULL_TURN/2);
+	}
 }
 
 // turnRight function
-void turnRight(unsigned int turnTime){
-	do{
-		P2DIR |= BIT2;
-		TA1CCTL1 = OUTMOD_7;
+void turnRight(char turnType){
+	// turn on the enables
+	P2OUT |= BIT0 & BIT3;
 
-		P2DIR &= ~BIT4;
-		TA1CCTL2 = OUTMOD_3;
+	// left moter ccw
+	P2OUT |= BIT1;
+	TA1CCTL1 = OUTMOD_7;
 
-		turnTime--;
-	}while(turnTime>0);
+	// right motor ccw
+	P2OUT |= BIT5;
+	TA1CCTL2 = OUTMOD_7;
+
+	// long turn as 1, short turn as 0
+	if(turnType){
+		delay(FULL_TURN);
+	}
+	else{
+		delay(FULL_TURN/2);
+	}
 }
 
 
@@ -113,6 +129,7 @@ void main(void) {
         TA1CCR2 = (TA1CCR2 + 0x010) & 0xFF;	// decrease duty cycle
 */
 //    	moveForward();
-    	moveBackward();
+//    	moveBackward();
+    	turnLeft(1);
     } // end loop
 } // end main
