@@ -1,21 +1,36 @@
-#include <msp430.h>
-#include "irInfo.h"
+/*
+ * Author: Matt Bergstedt
+ * Date: Nov 24, 2014
+ * Description: Drives the robot in multiple directions and provides for turns
+ * Documentation: I used code Dr. Coulston provided for initially testing the outputs to the motors
+ */
 
-//#define TRUE 1
+#include <msp430.h>
+//#include "irInfo.h"
+
 #define FULL_TURN 450000
 
+// for use with ir
+/*
 int32	irPacket = 0;
 int8	newIrPacket = FALSE;
 int16	packetData[48];
 int8	packetIndex = 0;
+*/
 
-// stop function
+/*
+ * stop function
+ * Description: stops the robot
+ */
 void stop(void){
 	// turn off the enables
 	P2OUT &= ~(BIT0 | BIT3);
 }
 
-// moveForward function
+/*
+* moveForward function
+* Description: moves the robot to forward
+*/
 void moveForward(void){
 	// turn on the enables
 	P2OUT |= BIT0 | BIT3;
@@ -29,7 +44,10 @@ void moveForward(void){
 	TA1CCTL2 = OUTMOD_3;					// set TACCTL2 to Set / Reset mode
 }
 
-// moveBackward function
+/*
+ * moveBackward function
+ * Description: moves the robot to backwards
+ */
 void moveBackward(void){
 	// turn on the enables
 	P2OUT |= BIT0 | BIT3;
@@ -43,7 +61,10 @@ void moveBackward(void){
 	TA1CCTL2 = OUTMOD_7;
 }
 
-// turnLeft function
+/*
+ * turnLeft function
+ * Description: turns the robot to the left
+ */
 void turnLeft(char turnType){
 	// turn on the enables
 	P2OUT |= BIT0 | BIT3;
@@ -65,7 +86,10 @@ void turnLeft(char turnType){
 	}
 }
 
-// turnRight function
+/*
+ * turnRight function
+ * Description: turns the robot to the right
+ */
 void turnRight(char turnType){
 	// turn on the enables
 	P2OUT |= BIT0 | BIT3;
@@ -87,7 +111,11 @@ void turnRight(char turnType){
 	}
 }
 
-
+/*
+ * main.c
+ * Description: sets up the ports for use with the motor driver chip, and runs through examples of
+ * 			each of the movement functions
+ */
 void main(void) {
     WDTCTL = WDTPW|WDTHOLD;                 // stop the watchdog timer
 
